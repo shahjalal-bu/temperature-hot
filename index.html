@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background: url(images/bg-image.jpg) no-repeat;
+        background-size: cover;
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <form class="col-md-6 m-auto py-5">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="enter-city-name"
+            placeholder="Enter a location for Weather ..."
+          />
+          <div class="input-group-append">
+            <button type="button" class="btn btn-danger">Search</button>
+          </div>
+        </div>
+      </form>
+      <div class="weather-status text-white text-center">
+        <img
+          id="icon"
+          src="https://openweathermap.org/img/wn/02d@2x.png"
+          alt=""
+        />
+        <h1 id="cityName">Dhaka</h1>
+        <h3><span id="temp">38.06</span>&deg;C</h3>
+        <h1 class="lead" id="main">Clouds</h1>
+      </div>
+    </div>
+    <script>
+      const btnDanger = document.querySelector(".btn-danger");
+      let cityName = document.getElementById("enter-city-name");
+
+
+      //this function is for make city name to title case
+
+      function titleCase(str) {
+        str = str.toLowerCase().split(" ");
+        for (var i = 0; i < str.length; i++) {
+          str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+        }
+        return str.join(" ");
+      }
+
+
+      //this function is for fetch data form the server and put their value to html 
+
+
+      function fetchData(cityName) {
+        fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=0d82d51f2fec1cd949b5e91073dc0601`
+        )
+          .then(res => res.json())
+          .then(data => {
+            document.querySelector("#temp").innerText = data.main.temp;
+            document.querySelector("#cityName").innerText = titleCase(
+              data.name
+            );
+            document.querySelector("#main").innerText = data.weather[0].main;
+            document.querySelector(
+              "#icon"
+            ).src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+          });
+      }
+
+      //this if default call for function
+      
+      fetchData("dhaka");
+
+
+      //this is when clicked the button and call the function and reset input value
+
+      btnDanger.addEventListener("click", function (e) {
+        e.preventDefault();
+        fetchData(cityName.value);
+        cityName.value = "";
+      });
+
+      
+    </script>
+  </body>
+</html>
